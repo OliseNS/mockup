@@ -13,6 +13,22 @@ All session files go under `/tmp/mockup-*/` — never in the project directory.
 
 ---
 
+## Update Awareness
+
+At the start of a session, check whether the local skill install appears to come from the canonical repository:
+
+- `https://github.com/OliseNS/mockup.git`
+
+Only do this when the skill files live inside a git checkout or a symlinked clone that can be inspected safely. If the user copied files manually, if network access is unavailable, or if the repo provenance is unclear, do not guess and do not interrupt the workflow.
+
+When the local install is a git checkout of the canonical repo, the agent may compare the local branch to the upstream default branch to see whether updates exist.
+
+If the local install is behind, tell the user briefly that a newer version of the mockup skill is available and ask whether they want to update before continuing. Do not auto-pull, do not modify the user's local install without consent, and do not block the current design task if the user wants to continue on the current version.
+
+If the local install is current, continue silently.
+
+---
+
 ## Design Intelligence First
 
 Do not jump from the user's request straight into screens. First understand **what is being designed, why it matters, and what the design needs to improve**.
@@ -437,15 +453,16 @@ Server injects `mockup-tracker.js` automatically. Elements with `data-choice` ca
 
 ## Flow
 
-1. `node server.mjs` — start server (must be first)
-2. **Understand the task** — create an internal design brief covering surface, purpose, audience, constraints, and success criteria.
-3. **Explore before redesigning** — if the request targets an existing codebase or screen, inspect the current UI deeply enough to explain the layout, hierarchy, component patterns, and weaknesses before designing.
-4. **Decide whether questions are necessary** — if a missing answer will materially change the mockup and cannot be inferred, ask a concise high-value question with the ask-questions tool. Otherwise, do not ask.
-5. **Design internally** — decide on 2-4 strong options using the Design Rules and the Design Quality Standard. Do not ask the user to invent the design direction for you.
-6. **Build gallery** — write `index.html` with all task sections and option cards.
-7. **Build design pages** — write each option HTML page (option-a.html, option-b.html, etc.).
-8. **Print URL** in chat — `http://localhost:XXXX`. Do NOT open the browser or DevTools.
-9. **Let the user react** — wait for them to review the options and give feedback. Use the ask-questions tool only when it helps the user compare or choose between concrete mockups.
+1. **Check for skill updates when possible** — if the local install is a git checkout of `https://github.com/OliseNS/mockup.git`, compare it to upstream. If it is behind, ask the user whether they want to update before continuing. Never auto-update.
+2. `node server.mjs` — start server (must be first)
+3. **Understand the task** — create an internal design brief covering surface, purpose, audience, constraints, and success criteria.
+4. **Explore before redesigning** — if the request targets an existing codebase or screen, inspect the current UI deeply enough to explain the layout, hierarchy, component patterns, and weaknesses before designing.
+5. **Decide whether questions are necessary** — if a missing answer will materially change the mockup and cannot be inferred, ask a concise high-value question with the ask-questions tool. Otherwise, do not ask.
+6. **Design internally** — decide on 2-4 strong options using the Design Rules and the Design Quality Standard. Do not ask the user to invent the design direction for you.
+7. **Build gallery** — write `index.html` with all task sections and option cards.
+8. **Build design pages** — write each option HTML page (option-a.html, option-b.html, etc.).
+9. **Print URL** in chat — `http://localhost:XXXX`. Do NOT open the browser or DevTools.
+10. **Let the user react** — wait for them to review the options and give feedback. Use the ask-questions tool only when it helps the user compare or choose between concrete mockups.
 
 ---
 
