@@ -5,7 +5,7 @@ description: Use when creating or redesigning UI through local interactive mocku
 
 # Mockup Skill
 
-Build interactive UI mockups on **localhost** using HTML + Tailwind CSS via CDN. Every mockup must look like a human designer made it — not an AI.
+Build interactive UI mockups on **localhost** using HTML + Tailwind CSS via CDN. The gallery page is deterministic. The individual design pages are not. Every mockup must look like a human designer made it — not an AI.
 
 All session files go under `/tmp/mockup-*/` — never in the project directory.
 
@@ -33,6 +33,8 @@ If the local install is current, continue silently.
 
 Do not jump from the user's request straight into screens. First understand **what is being designed, why it matters, and what the design needs to improve**.
 
+The design language for each option must come from the task, the product context, and the observed weaknesses of the current UI. Do not start from a canned aesthetic, a favorite layout, or a preselected style family and then force the task into it.
+
 Before any mockup work, create an internal design brief with answers to these questions:
 
 - What surface is being designed: page, flow, dashboard, component, empty state, marketing site, or redesign of an existing screen?
@@ -41,7 +43,12 @@ Before any mockup work, create an internal design brief with answers to these qu
 - What must remain recognizable and what is safe to change?
 - What would make the redesign objectively better: clearer hierarchy, fewer decisions, stronger focal point, better scanability, better spacing rhythm, better content prioritization, or better emotional tone?
 
-If you cannot answer those questions from the prompt or the existing codebase, gather more context before designing.
+Also produce an internal **design driver** for each option in one sentence:
+
+- What specific product problem is this option trying to solve better than the others?
+- Why does this structure fit this task instead of some generic landing page or dashboard template?
+
+If you cannot answer those questions from the prompt or the existing codebase, gather more context before designing. If you already can answer them, do not prolong discovery just to manufacture extra process.
 
 ---
 
@@ -112,11 +119,19 @@ If an option is visually stylish but weaker in hierarchy, clarity, or task flow,
 
 ### Internal Design Checks (don't show to the user)
 
-Before building, verify internally that your options are genuinely diverse. Each option must differ in **at least 2 of these 3 dimensions**: page structure, visual style, and layout approach. No two options should share more than 2 of the same structural elements (nav type, hero treatment, content organization, footer type, CTA pattern). If they do, rework the options.
+Before building, verify internally that your options are genuinely diverse. Each option must differ in **at least 2 of these 3 dimensions**: page structure, interaction emphasis, and layout approach. No two options should share more than 2 of the same structural elements (nav type, hero treatment, content organization, footer type, CTA pattern). If they do, rework the options.
 
 Also internally verify each option breaks common AI-generated patterns (symmetry, centered layouts, equal columns, generic Tailwind defaults). The "human-made" rules below are your design constraints, not talking points to explain to the user.
 
-Also verify that each option has a clear design thesis in one sentence. If you cannot explain why an option exists and what it improves, it is decoration, not design.
+Also verify that each option has a clear design thesis in one sentence tied to the task. If you cannot explain why an option exists, what product tradeoff it makes, and why that tradeoff fits this brief, it is decoration, not design.
+
+Run one internal evaluator pass before showing the user anything:
+
+- Check whether the option could be mistaken for a generic AI-generated SaaS page with different colors.
+- Check whether the composition follows from the brief, or whether it looks like a template with the nouns swapped out.
+- Check whether another strong human designer could defend the hierarchy and structure in product terms.
+
+If any answer is no, rework the option before presenting it.
 
 ---
 
@@ -162,7 +177,7 @@ tailwind.config = {
 
 **Avoid complementary or split-complementary palettes** — they're the number-one sign a computer picked the colors. If your accent is warm (red/orange), your neutrals should be warm too — don't pair a warm accent with cool grays.
 
-**Variety rule:** Never same accent back-to-back. Warm last time? Go cool. Light last time? Go dark. Never pure `#000` or `#fff`.
+Choose color based on the task and the option's design driver. Variation across sessions is desirable, but never rotate palettes mechanically just for novelty.
 
 ---
 
@@ -262,7 +277,7 @@ Every item below is a recognized AI design tell. If any of these are present, th
 
 ---
 
-## Design Style Diversity
+## Direction Diversity
 
 ### The Core Problem
 
@@ -273,18 +288,18 @@ Within a single task, each option must differ in **at least 2 of these 3 dimensi
 | Dimension | What it means |
 |-----------|--------------|
 | **Page structure** | The skeleton — nav type, hero treatment, how content is organized vertically |
-| **Visual style** | The aesthetic from the table below — typography, color use, spacing, mood |
+| **Interaction emphasis** | What the design prioritizes first — narrative, decision-making, browsing, comparison, trust, speed, density |
 | **Layout approach** | How elements sit on the page — asymmetric grid, single column, overlapping, split-screen, etc. |
 
 Example: For a landing page with 3 options, this is **banned**:
-- Option A: Minimal editorial — centered hero, 3 feature cards in a row, footer
-- Option B: Dark immersive — centered hero, 3 feature cards in a row, footer *(same structure, different colors)*
-- Option C: Brutalist — centered hero, 3 feature cards in a row, footer *(same structure, different borders)*
+- Option A: Narrative-led — centered hero, 3 feature cards in a row, footer
+- Option B: Trust-led — centered hero, 3 feature cards in a row, footer *(same structure, different colors)*
+- Option C: Conversion-led — centered hero, 3 feature cards in a row, footer *(same structure, different borders)*
 
 This is **good**:
-- Option A: Minimal editorial — full-screen hero image with text overlay, vertical article-style content below, no feature cards, thin nav
-- Option B: Data-dense — dashboard-style layout, stats and numbers as hero, tabbed interface, sidebar nav, small multiples
-- Option C: Brutalist — no nav at all, giant typography as the hero, single-column manifesto-style layout, heavy bottom border as footer
+- Option A: Narrative-led — full-screen hero image with text overlay, vertical article-style content below, no feature cards, thin nav
+- Option B: Evidence-led — dashboard-style layout, stats and numbers as hero, tabbed interface, sidebar nav, small multiples
+- Option C: Action-led — no nav at all, giant typography as the hero, single-column decision flow, inline action modules instead of feature sections
 
 **Structural overlap rule:** No two options within a task can share more than 2 of these structural elements:
 - Same nav type (top bar / sidebar / no nav / sticky / off-canvas)
@@ -293,21 +308,17 @@ This is **good**:
 - Same footer type (full / minimal / no footer)
 - Same CTA pattern (button / text link / form / no CTA)
 
-### Style Reference Table
+### No Style Roulette
 
-| Style | Vibe | Key Characteristics |
-|-------|------|-------------------|
-| **Minimal editorial** | Airy, confident | Large typography (2-3rem), generous whitespace, single accent used sparingly, magazine-inspired, real photography |
-| **Dark immersive** | Moody, focused | Dark surface (`#141418`), accent glows against dark, data as visual element, full-bleed sections, minimal chrome |
-| **Data-dense** | Analytical, precise | Compact layouts, monospace for data values, sparklines, small tables, maximize data-ink ratio |
-| **Neomorphic** | Tactile, soft | Subtle inset/outset shadows, soft palette, rounded elements, extruded cards, low contrast, clean |
-| **Brutalist** | Bold, raw | Heavy borders (2-4px), stark typography, high contrast, unconventional asymmetry, minimal decoration |
-| **Swiss/grid** | Structured, clean | Asymmetric grid layouts, sans-serif, color blocks, geometric precision, clear hierarchy |
-| **Playful/vibrant** | Energetic, warm | Bright saturated accent, rounded corners everywhere, loose spacing, personality, micro-interactions |
-| **Warm editorial** | Inviting, rich | Serif/editorial fonts, warm neutrals (`#f4f2ef`), generous margins, pull quotes, data callouts |
-| **Corporate** | Trustworthy, safe | Card-based, consistent spacing, predictable grids, muted palette, polished but conventional |
+Do not generate directions by picking from a house catalog like editorial, brutalist, dark SaaS, or playful and then applying it to the task. Those labels can appear later as shorthand when they genuinely describe what emerged, but they must not be the starting point.
 
-**Rotation rule:** Never repeat the same style combination across sessions. Last session used dark immersive + minimal editorial + playful? Pick three different styles this time.
+Instead, derive each option from a different product thesis:
+
+- one option can optimize for clarity and scanability
+- one can optimize for emotional pull or brand presence
+- one can optimize for speed of decision-making or action
+
+The visual language should emerge from that thesis, the audience, the content, and the product surface. If you can swap the copy and keep the exact same layout, the option is too generic.
 
 ---
 
@@ -316,6 +327,8 @@ This is **good**:
 One gallery page per session at `/tmp/mockup-*/index.html`. Each task gets its own section with 2-3 option cards. Each card links to a standalone HTML file (option-a.html, option-b.html, etc.).
 
 No decorative flourishes on the gallery page itself — all personality lives inside the design pages.
+
+The gallery is the only deterministic surface in this skill. Keep its structure, card anatomy, and interaction model stable across sessions.
 
 ```html
 <div class="min-h-svh bg-background flex flex-col">
@@ -336,10 +349,10 @@ No decorative flourishes on the gallery page itself — all personality lives in
               <span class="inline-block w-3 h-3 rounded-full border border-foreground/10" style="background:#F0EDE8"></span>
             </span>
           </div>
-          <!-- Style name -->
-          <h3 class="text-lg font-bold text-foreground leading-tight">Minimal editorial</h3>
+          <!-- Direction name -->
+          <h3 class="text-lg font-bold text-foreground leading-tight">Narrative-led product story</h3>
           <!-- Description -->
-          <p class="text-sm text-muted-fg mt-1.5 leading-relaxed flex-1">Full-screen hero image with text overlay, article-style content, thin nav. Warm, airy, confident.</p>
+          <p class="text-sm text-muted-fg mt-1.5 leading-relaxed flex-1">Full-screen hero image with text overlay, article-style content, thin nav. Built to make the product feel legible and specific instead of generic.</p>
           <!-- Structural tags at bottom -->
           <div class="flex flex-wrap gap-1.5 mt-4 pt-3 border-t border-foreground/5">
             <span class="text-[11px] font-mono text-muted-fg/60 px-2 py-0.5 bg-foreground/[0.03] rounded">hero image</span>
@@ -353,7 +366,7 @@ No decorative flourishes on the gallery page itself — all personality lives in
             <span class="text-[10px] text-muted-fg/40 font-mono tracking-tight">Inter</span>
           </div>
         </a>
-        <!-- Option B and C follow the same card pattern with different style, palette, tags, fonts -->
+        <!-- Option B and C follow the same card pattern with different direction labels, palettes, tags, and fonts -->
       </div>
     </div>
     <!-- ===== Task 2 Section ===== -->
@@ -375,8 +388,8 @@ No decorative flourishes on the gallery page itself — all personality lives in
 
 **Card anatomy (top to bottom):**
 1. Top row: "OPTION X" label on left, two palette color dots on right (accent + background)
-2. Style name in bold
-3. Description — what the design actually looks like, pulling from the pre-flight check
+2. Direction name in bold
+3. Description — what the design actually looks like and what product problem it is trying to solve
 4. Structural tags — 2-4 compact tags showing nav type, hero type, content layout, footer type (from the pre-flight Structure field)
 5. Font pairing in tiny muted text at the bottom
 
@@ -394,10 +407,19 @@ Footer with credit is required on every gallery page.
 
 Each option (option-a.html, option-b.html, etc.) is a standalone HTML file showing what the user asked for — a full website, a dashboard, a component, whatever fits the task.
 
+These pages must be **task-derived, not deterministic**. The skill should not reuse a preferred skeleton, a default hero recipe, a fixed section order, or a recurring style pack just because it worked previously.
+
+Before writing each page, the agent should be able to state internally:
+
+- what this option is trying to make easier for the user
+- what it is intentionally not optimizing for
+- why this structure is specific to this task
+- what would make this option feel fake or AI-generated, so it can avoid that failure mode
+
 **What to include:**
 - Complete HTML document with Tailwind CDN + palette + fonts
 - Real data relevant to the project (parish names, metrics, real numbers)
-- Real images via `/placeholder/` endpoint — use contextually relevant keywords that match the subject matter (e.g., `/classroom`, `/school`, `/graduation` for education, `/louisiana` for geographic context). Image style should complement the design style: editorial = large hero photos, data-dense = smaller decorative thumbnails, dark = moody darker images
+- Real images via `/placeholder/` endpoint — use contextually relevant keywords that match the subject matter (e.g., `/classroom`, `/school`, `/graduation` for education, `/louisiana` for geographic context). Image treatment should support the option's design driver instead of a canned style label.
 - Interactive elements where meaningful (buttons, selects, toggles)
 - Real maps (`/map`) or charts (`/chart`) when the design calls for geographic or statistical data
 
@@ -408,7 +430,7 @@ Each option (option-a.html, option-b.html, etc.) is a standalone HTML file showi
 - No elaborate hover effects — basic color shifts on interactive elements only
 - No edge cases (long names, zero values, error states)
 
-The design should look clean and presentable, not production-polished. Speed over perfection.
+The design should look clean and presentable, not production-polished. Speed over perfection, but never at the cost of reverting to a generic website template.
 
 ---
 
@@ -451,6 +473,28 @@ Server injects `mockup-tracker.js` automatically. Elements with `data-choice` ca
 
 ---
 
+## Harness-Aware Execution
+
+If the harness supports subagents, use them when they improve speed or separation of concerns.
+
+Good uses for subagents:
+
+- read-only exploration of an existing codebase or current UI
+- parallel generation of independent option pages after the main agent has already fixed the design brief and product thesis for each option
+- targeted review of whether an option looks generic, repetitive, or inconsistent with the chosen direction
+
+Do not use subagents as an excuse to avoid design judgment. The main agent should still own:
+
+- the design brief
+- the option theses
+- the final evaluator pass
+- the gallery page
+- the user-facing synthesis of tradeoffs
+
+If the harness does not support subagents, continue with a single-agent workflow. Do not make the skill depend on them.
+
+---
+
 ## Flow
 
 1. **Check for skill updates when possible** — if the local install is a git checkout of `https://github.com/OliseNS/mockup.git`, compare it to upstream. If it is behind, ask the user whether they want to update before continuing. Never auto-update.
@@ -458,14 +502,26 @@ Server injects `mockup-tracker.js` automatically. Elements with `data-choice` ca
 3. **Understand the task** — create an internal design brief covering surface, purpose, audience, constraints, and success criteria.
 4. **Explore before redesigning** — if the request targets an existing codebase or screen, inspect the current UI deeply enough to explain the layout, hierarchy, component patterns, and weaknesses before designing.
 5. **Decide whether questions are necessary** — if a missing answer will materially change the mockup and cannot be inferred, ask a concise high-value question with the ask-questions tool. Otherwise, do not ask.
-6. **Design internally** — decide on 2-4 strong options using the Design Rules and the Design Quality Standard. Do not ask the user to invent the design direction for you.
-7. **Build gallery** — write `index.html` with all task sections and option cards.
-8. **Build design pages** — write each option HTML page (option-a.html, option-b.html, etc.).
-9. **Print URL** in chat — `http://localhost:XXXX`. Do NOT open the browser or DevTools.
-10. **Let the user react** — wait for them to review the options and give feedback. Use the ask-questions tool only when it helps the user compare or choose between concrete mockups.
+6. **Design internally** — decide on 2-3 strong options using the Design Rules and the Design Quality Standard. Default to 2 options unless the task clearly benefits from a third. Base each option on a different product thesis, not a different coat of paint. Do not ask the user to invent the design direction for you.
+7. **Build gallery** — write `index.html` with all task sections and option cards. Keep this page deterministic.
+8. **Build design pages** — write each option HTML page (option-a.html, option-b.html, etc.). These pages should vary with the task and must not inherit a default template. If subagents are available, they may build independent option pages in parallel after the main agent has fixed the brief and option theses.
+9. **Run an internal evaluator pass** — check each option against the brief, the anti-generic rules, and the question "would this still make sense if a human designer had to defend it in a critique?" Rework weak options before showing them.
+10. **Print URL** in chat — `http://localhost:XXXX`. Do NOT open the browser or DevTools.
+11. **Let the user react** — wait for them to review the options and give feedback. Use the ask-questions tool only when it helps the user compare or choose between concrete mockups.
 
 ---
 
 ## After the User Picks
 
 When the user selects an option (e.g., "I like A"), the implementation agent should open the chosen HTML file to see the design, then implement it using the project's own tech stack (React/shadcn components, etc.). The mockup skill's job ends at helping the user envision and choose — no translation to framework code needed here.
+
+If the implementation stack uses shadcn, do not settle for the default card-plus-button look. Reach for strong component sources when they fit the chosen direction, including polished libraries like Magic UI and other high-quality shadcn-compatible components.
+
+Use that guidance carefully:
+
+- choose components that support the selected design, not components that fight it
+- prefer a small number of distinctive, well-integrated components over dumping a library into the page
+- adapt spacing, typography, motion, borders, and surfaces so the final UI feels designed, not assembled from defaults
+- keep interaction quality high, but do not add flashy components that make the result look more AI-generated
+
+If subagents are available during implementation, they can help with independent build slices, but the main implementation agent should still own final composition and consistency.
