@@ -27,6 +27,26 @@ If the local install is behind, tell the user briefly that a newer version of th
 
 If the local install is current, continue silently.
 
+When the user explicitly asks to update the mockup skill, treat that as a request to sync the local install from the canonical GitHub repository, not as a request to rewrite the skill manually.
+
+Use this decision flow:
+
+- If the local skill files live inside a git checkout of the canonical repo, or inside a symlinked clone that resolves to that checkout, inspect the repo state, confirm the target branch, and update from GitHub with the normal git flow after user consent.
+- If the checkout tracks the canonical remote already, use the existing remote and pull the upstream default branch.
+- If the checkout is clearly the canonical repo but the remote is missing or renamed, use `https://github.com/OliseNS/mockup.git` as the source of truth and say so explicitly before updating.
+- If the files were copied manually, if the repo provenance is unclear, or if there is no safe git checkout to pull from, do not guess. Tell the user that the current install cannot be updated in place from GitHub and offer the GitHub clone or sync path instead.
+
+Never invent another source repository for updates. The canonical source is `https://github.com/OliseNS/mockup.git` unless the user explicitly overrides it.
+
+When an update request is safe to execute, prefer a short status summary before changing anything:
+
+- where the local install is coming from
+- whether it is a git checkout or copied files
+- whether it is behind the upstream default branch
+- what exact pull or clone action you intend to run
+
+Do not auto-pull on discovery alone. Only pull when the user asked to update, or when they explicitly approved the update after being informed that the local install is behind.
+
 ---
 
 ## Design Intelligence First
@@ -506,7 +526,7 @@ If the harness does not support subagents, continue with a single-agent workflow
 7. **Build gallery** — write `index.html` with all task sections and option cards. Keep this page deterministic.
 8. **Build design pages** — write each option HTML page (option-a.html, option-b.html, etc.). These pages should vary with the task and must not inherit a default template. If subagents are available, they may build independent option pages in parallel after the main agent has fixed the brief and option theses.
 9. **Run an internal evaluator pass** — check each option against the brief, the anti-generic rules, and the question "would this still make sense if a human designer had to defend it in a critique?" Rework weak options before showing them.
-10. **Print URL** in chat — `http://localhost:XXXX`. Do NOT open the browser or DevTools.
+10. **Print URL** in chat — `http://localhost:XXXX`. Do NOT open the browser or DevTools. The link should be the last thing printed by the skill before waiting for user input, so it is clear that the mockups are ready for review.
 11. **Let the user react** — wait for them to review the options and give feedback. Use the ask-questions tool only when it helps the user compare or choose between concrete mockups.
 
 ---
